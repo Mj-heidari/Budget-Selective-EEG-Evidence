@@ -1,0 +1,178 @@
+{
+  "seed": 2026,
+  "training_duration": 60,
+  "inner_folds": 3,
+  "n_estimators": 500,
+  "bootstrap": 1000,
+  "models": [
+    "proposed",
+    "proposed_ros",
+    "proposed_jitter",
+    "proposed_gan",
+    "proposed_gated",
+    "proposed_guided"
+  ],
+  "grid": {
+    "k": [
+      20
+    ],
+    "min_samples_leaf": [
+      5
+    ],
+    "max_depth": [
+      10
+    ]
+  },
+  "penalties": [
+    1.0
+  ],
+  "model_specs": {
+    "proposed_ros": {
+      "mode": "proposed",
+      "augmentation": "ros",
+      "augmentation_ratio": 0.5,
+      "gan_steps": 400,
+      "moment_weight": 0
+    },
+    "proposed_jitter": {
+      "mode": "proposed",
+      "augmentation": "jitter",
+      "augmentation_ratio": 0.5,
+      "gan_steps": 400,
+      "moment_weight": 0
+    },
+    "proposed_gan": {
+      "mode": "proposed",
+      "augmentation": "gan",
+      "augmentation_ratio": 0.5,
+      "gan_steps": 400,
+      "moment_weight": 0
+    },
+    "proposed_gated": {
+      "mode": "proposed",
+      "augmentation": "gan_gated",
+      "augmentation_ratio": 0.5,
+      "gan_steps": 400,
+      "moment_weight": 0
+    },
+    "proposed_guided": {
+      "mode": "proposed",
+      "augmentation": "gan_gated",
+      "augmentation_ratio": 0.5,
+      "gan_steps": 400,
+      "moment_weight": 0.1
+    }
+  },
+  "model_grids": {
+    "proposed_ros": {
+      "k": [
+        20
+      ],
+      "min_samples_leaf": [
+        5
+      ],
+      "max_depth": [
+        10
+      ],
+      "augmentation_ratio": [
+        0.0,
+        0.25,
+        0.5
+      ]
+    },
+    "proposed_jitter": {
+      "k": [
+        20
+      ],
+      "min_samples_leaf": [
+        5
+      ],
+      "max_depth": [
+        10
+      ],
+      "augmentation_ratio": [
+        0.0,
+        0.25,
+        0.5
+      ]
+    },
+    "proposed_gan": {
+      "k": [
+        20
+      ],
+      "min_samples_leaf": [
+        5
+      ],
+      "max_depth": [
+        10
+      ],
+      "augmentation_ratio": [
+        0.0,
+        0.25,
+        0.5
+      ]
+    },
+    "proposed_gated": {
+      "k": [
+        20
+      ],
+      "min_samples_leaf": [
+        5
+      ],
+      "max_depth": [
+        10
+      ],
+      "augmentation_ratio": [
+        0.0,
+        0.25,
+        0.5
+      ]
+    },
+    "proposed_guided": {
+      "k": [
+        20
+      ],
+      "min_samples_leaf": [
+        5
+      ],
+      "max_depth": [
+        10
+      ],
+      "augmentation_ratio": [
+        0.0,
+        0.25,
+        0.5
+      ]
+    }
+  },
+  "comparisons": [
+    [
+      "proposed_guided",
+      "proposed"
+    ],
+    [
+      "proposed_gan",
+      "proposed"
+    ],
+    [
+      "proposed_gated",
+      "proposed_gan"
+    ],
+    [
+      "proposed_guided",
+      "proposed_gated"
+    ],
+    [
+      "proposed_guided",
+      "proposed_ros"
+    ],
+    [
+      "proposed_guided",
+      "proposed_jitter"
+    ]
+  ],
+  "primary_contrast": [
+    "proposed_guided",
+    "proposed"
+  ]
+}

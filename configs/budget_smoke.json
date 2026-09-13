@@ -1,0 +1,95 @@
+{
+  "seed": 2026,
+  "training_duration": 60,
+  "inner_folds": 2,
+  "n_estimators": 16,
+  "bootstrap": 30,
+  "models": [
+    "proposed",
+    "proposed_guided"
+  ],
+  "residualize": false,
+  "grid": {
+    "k": [
+      20
+    ],
+    "min_samples_leaf": [
+      3
+    ],
+    "max_depth": [
+      5
+    ]
+  },
+  "penalties": [
+    1.0
+  ],
+  "model_specs": {
+    "proposed_svm": {
+      "mode": "proposed",
+      "classifier": "svm"
+    },
+    "proposed_logistic": {
+      "mode": "proposed",
+      "classifier": "logistic"
+    },
+    "proposed_ros": {
+      "mode": "proposed",
+      "augmentation": "ros",
+      "augmentation_ratio": 0.5,
+      "gan_steps": 4,
+      "moment_weight": 0,
+      "gan_batch_size": 8,
+      "gan_critic_steps": 1
+    },
+    "proposed_jitter": {
+      "mode": "proposed",
+      "augmentation": "jitter",
+      "augmentation_ratio": 0.5,
+      "gan_steps": 4,
+      "moment_weight": 0,
+      "gan_batch_size": 8,
+      "gan_critic_steps": 1
+    },
+    "proposed_gan": {
+      "mode": "proposed",
+      "augmentation": "gan",
+      "augmentation_ratio": 0.5,
+      "gan_steps": 4,
+      "moment_weight": 0,
+      "gan_batch_size": 8,
+      "gan_critic_steps": 1
+    },
+    "proposed_gated": {
+      "mode": "proposed",
+      "augmentation": "gan_gated",
+      "augmentation_ratio": 0.5,
+      "gan_steps": 4,
+      "moment_weight": 0,
+      "gan_batch_size": 8,
+      "gan_critic_steps": 1
+    },
+    "proposed_guided": {
+      "mode": "proposed",
+      "augmentation": "gan_gated",
+      "augmentation_ratio": 0.5,
+      "gan_steps": 4,
+      "moment_weight": 0.1,
+      "gan_batch_size": 8,
+      "gan_critic_steps": 1
+    }
+  },
+  "comparisons": [
+    [
+      "proposed_guided",
+      "proposed"
+    ]
+  ],
+  "budget_policy": true,
+  "budget_target_error": 0.1,
+  "budget_min_coverage": 0.5,
+  "budget_min_per_class": 2,
+  "primary_contrast": [
+    "proposed_guided",
+    "proposed"
+  ]
+}

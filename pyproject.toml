@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hbn-r3"
+version = "0.2.0"
+description = "Research prototype for reliability and release consistency in HBN EEG classification"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.26,<3", "scipy>=1.12,<2", "pandas>=2.1,<3", "scikit-learn>=1.4,<2", "matplotlib>=3.8,<4", "joblib>=1.3,<2"]
+
+[project.scripts]
+hbn-r3 = "hbn_r3.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.optional-dependencies]
+docs = ["reportlab>=4,<5"]
+bdf = ["mne>=1.6,<2"]

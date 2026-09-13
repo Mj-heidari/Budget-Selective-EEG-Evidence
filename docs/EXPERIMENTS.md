@@ -1,0 +1,15 @@
+# Experiment specification
+
+Primary selection comparison: proposed versus MI, 60 seconds per condition, same participants and outer splits. Research classifier grids are in `configs/research.json`; all hyperparameter selection occurs within outer training data.
+
+The GAN experiment fixes K=20, RF depth=10, leaf size=5 and release penalty=1.0 to control runtime. Each augmentation method tunes only its ratio over 0, 0.25 and 0.5. The unaugmented reference uses the same fixed classifier. Run seeds 2026, 2027 and 2028 by copying and changing the configuration **before** looking at results; report all seeds rather than selecting a favorable run.
+
+`gan` is class/release conditional LSGAN. `gan_gated` filters candidates by real within-cell neighbor support. `proposed_guided` additionally weights a cell-wise first/second moment penalty using real-training reliability and release heterogeneity. Moment weight 0.1 is prespecified, not an established optimum. Networks have two 64-unit leaky-ReLU layers. Adam settings and loss definitions are in the manuscript and `gan.py`. Diagnostics include loss traces, candidate counts, accepted counts and distances; synthetic vectors are not exported by default. The gate can reject every generated row. A no-augmentation ratio is valid.
+
+`budget_research.json` evaluates unaugmented and guided RF at 20, 40 and 60 clean seconds. Real inner OOF predictions tune duration-specific thresholds using one shared confidence quantile. Compare full-margin confidence with agreement among full and disjoint-half predictions. The policy seeks >=90% accepted accuracy and balanced accuracy, >=50% coverage, and at least 5 accepted examples per class in inner data. These are tuning constraints, not risk guarantees under release shift. Infeasible policies abstain for every test participant; ordinary predictions remain available separately.
+
+The original distributed duration subsets were not nested. `progressive_indices` now uses a fixed 15-epoch anchor and deterministic farthest-first order to make 5/10/15-epoch subsets nested. The budget is counted once per participant, including 60 seconds for an abstention. Because epochs are distributed across already-cleaned recordings, do not call this prospective acquisition time.
+
+Outputs: `oof_predictions.csv`, `release_metrics.csv`, `pooled_metrics.json`, `paired_comparisons.json`, `inner_tuning.csv`, `splits.json`, `environment.json`, outer `model_*.joblib`, selection reports, augmentation reports, and selection frequencies. SVM rows contain a margin in `score` and no probability. Budget runs additionally write `policy_*.json`, real inner-policy predictions, `budget_predictions.csv` and `budget_metrics.json`.
+
+Bootstrap intervals use fixed OOF predictions and family resampling. They do not cover all model-training uncertainty. No full nested permutation inference, external cohort validation, or guaranteed physiological validity of synthetic features is implemented. Release-specific outcomes, including degradations, must accompany pooled outcomes.

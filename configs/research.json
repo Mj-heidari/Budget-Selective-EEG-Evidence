@@ -1,0 +1,92 @@
+{
+  "seed": 2026,
+  "training_duration": 60,
+  "inner_folds": 3,
+  "n_estimators": 500,
+  "bootstrap": 1000,
+  "models": [
+    "bands",
+    "static",
+    "mi",
+    "reliability",
+    "proposed",
+    "demographics",
+    "proposed_svm",
+    "proposed_logistic"
+  ],
+  "residualize": false,
+  "grid": {
+    "k": [
+      20,
+      40
+    ],
+    "min_samples_leaf": [
+      2,
+      5
+    ],
+    "max_depth": [
+      10,
+      null
+    ]
+  },
+  "penalties": [
+    0.5,
+    1.0
+  ],
+  "model_specs": {
+    "proposed_svm": {
+      "mode": "proposed",
+      "classifier": "svm"
+    },
+    "proposed_logistic": {
+      "mode": "proposed",
+      "classifier": "logistic"
+    }
+  },
+  "model_grids": {
+    "proposed_svm": {
+      "k": [
+        20,
+        40
+      ],
+      "C": [
+        0.1,
+        1.0,
+        10.0
+      ]
+    },
+    "proposed_logistic": {
+      "k": [
+        20,
+        40
+      ],
+      "C": [
+        0.1,
+        1.0,
+        10.0
+      ]
+    }
+  },
+  "comparisons": [
+    [
+      "proposed",
+      "mi"
+    ],
+    [
+      "proposed",
+      "reliability"
+    ],
+    [
+      "mi",
+      "static"
+    ],
+    [
+      "proposed_svm",
+      "proposed"
+    ],
+    [
+      "proposed_logistic",
+      "proposed"
+    ]
+  ]
+}

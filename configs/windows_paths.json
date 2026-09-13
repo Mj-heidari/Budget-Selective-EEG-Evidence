@@ -1,0 +1,5 @@
+{
+  "dataset_root": "D:\\EEG_Dataset\\HBN_100Hz",
+  "release_folders": ["R4_L100_bdf", "R5_L100_bdf", "R7_L100_bdf", "R9_L100_bdf"],
+  "note": "Path reference only. Pass paths explicitly to CLI commands or scripts/run_windows.ps1."
+}
