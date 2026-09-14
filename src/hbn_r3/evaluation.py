@@ -35,13 +35,38 @@ def metrics(y,p,threshold=.5):
             "tn":int(tn),"fp":int(fp),"fn":int(fn),"tp":int(tp)}
 
 
+def _group_members(keys):
+    """Row positions belonging to each cluster, in first-appearance order.
+
+    Resampling is done over integer index arrays rather than by concatenating
+    per-cluster frames. With family identifiers a cohort has few large
+    clusters and either approach is fast; under participant-level blocking it
+    has one cluster per participant, and frame concatenation then dominates
+    the entire run.
+    """
+    codes,uniques=pd.factorize(keys,sort=False)
+    order=np.argsort(codes,kind="stable");sorted_codes=codes[order]
+    left=np.searchsorted(sorted_codes,np.arange(len(uniques)),side="left")
+    right=np.searchsorted(sorted_codes,np.arange(len(uniques)),side="right")
+    return [order[a:b] for a,b in zip(left,right)]
+
+
+def _balanced(y,pred):
+    """Balanced accuracy on integer arrays; None if a class is absent."""
+    positive=y==1;n_pos=int(positive.sum());n_neg=len(y)-n_pos
+    if n_pos==0 or n_neg==0:return None
+    return .5*((pred[positive]==1).sum()/n_pos+(pred[~positive]==0).sum()/n_neg)
+
+
 def cluster_interval(rows,n_boot=1000,seed=2026):
     """Conditional uncertainty of fixed OOF predictions; not full training uncertainty."""
     rng=np.random.default_rng(seed)
-    groups=rows.group_id.unique();pieces={g:rows[rows.group_id==g] for g in groups};samples=[]
+    members=_group_members(rows.group_id.to_numpy())
+    labels=rows.label.to_numpy(int);predictions=rows.prediction.to_numpy(int);samples=[]
     for _ in range(n_boot):
-        boot=pd.concat([pieces[g] for g in rng.choice(groups,len(groups),replace=True)])
-        if boot.label.nunique()==2:samples.append(balanced_accuracy_score(boot.label,boot.prediction))
+        index=np.concatenate([members[g] for g in rng.choice(len(members),len(members),replace=True)])
+        value=_balanced(labels[index],predictions[index])
+        if value is not None:samples.append(value)
     return np.quantile(samples,[.025,.975]).tolist() if samples else [None,None]
 
 
@@ -55,13 +80,16 @@ def paired_interval(rows,model="proposed",baseline="mi",duration=60,n_boot=1000,
     if len(joined)!=len(p) or len(joined)!=len(b):raise ValueError("Paired models have different participant cohorts")
     if not np.array_equal(joined.group_id_p,joined.group_id_b):raise ValueError("Paired family IDs differ")
     if not np.array_equal(joined.label_p,joined.label_b):raise ValueError("Paired labels do not match")
-    groups=joined.group_id_p.unique();pieces={g:joined[joined.group_id_p==g] for g in groups}
+    members=_group_members(joined.group_id_p.to_numpy())
+    labels=joined.label_p.to_numpy(int)
+    model_pred=joined.prediction_p.to_numpy(int);baseline_pred=joined.prediction_b.to_numpy(int)
     rng=np.random.default_rng(seed);vals=[]
     for _ in range(n_boot):
-        z=pd.concat([pieces[g] for g in rng.choice(groups,len(groups),replace=True)])
-        if z.label_p.nunique()<2:continue
-        vals.append(balanced_accuracy_score(z.label_p,z.prediction_p)-balanced_accuracy_score(z.label_p,z.prediction_b))
-    point=balanced_accuracy_score(joined.label_p,joined.prediction_p)-balanced_accuracy_score(joined.label_p,joined.prediction_b)
+        index=np.concatenate([members[g] for g in rng.choice(len(members),len(members),replace=True)])
+        y=labels[index];a=_balanced(y,model_pred[index])
+        if a is None:continue
+        vals.append(a-_balanced(y,baseline_pred[index]))
+    point=_balanced(labels,model_pred)-_balanced(labels,baseline_pred)
     return {"model":model,"baseline":baseline,"duration":duration,"delta_balanced_accuracy":float(point),
             "conditional_cluster_ci95":(np.quantile(vals,[.025,.975]).tolist() if vals else [None,None]),"n_pairs":len(joined)}
 
