@@ -1,5 +1,15 @@
-"""Render the manuscript figures from the exported run artefacts."""
+"""Render the study figures from the exported run artefacts.
+
+Usage:
+    python scripts/make_figures.py [RUN_DIR] [OUT_DIR]
+
+RUN_DIR is the directory holding the completed runs (default: outputs), with
+subdirectories `augmentation`, `budget` and `classifiers` plus the pooled
+`budget_sweep_pooled.csv` and `augmentation_effects_all.json` summaries.
+OUT_DIR defaults to docs/figures.
+"""
 import json
+import sys
 from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
@@ -7,8 +17,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-RUN = Path("/home/claude/build/p8run/out")
-OUT = Path(__file__).resolve().parents[1] / "paper/figures"
+ROOT = Path(__file__).resolve().parents[1]
+RUN = Path(sys.argv[1]).expanduser() if len(sys.argv) > 1 else ROOT / "outputs"
+OUT = Path(sys.argv[2]).expanduser() if len(sys.argv) > 2 else ROOT / "docs/figures"
+if not RUN.is_dir():
+    raise SystemExit(f"Run directory not found: {RUN}\n"
+                     f"Pass it explicitly: python scripts/make_figures.py <run dir>")
 OUT.mkdir(parents=True, exist_ok=True)
 plt.rcParams.update({"font.size": 8, "axes.spines.top": False, "axes.spines.right": False,
                      "figure.dpi": 200, "savefig.bbox": "tight"})
