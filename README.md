@@ -9,8 +9,7 @@ R5, R7 and R9, a stopping rule tuned only on inner training folds answers for
 per condition, against 0.720 for a fixed 40 s protocol applied to everyone, and
 reaches 0.827 on the 48% it accepts most confidently. Acquisition batch
 dominates every modelling choice: held-out accuracy spans 0.638 to 0.785 across
-the four releases, roughly six times the largest modelling effect. See
-[RESULTS.md](docs/RESULTS.md).
+the four releases, roughly six times the largest modelling effect.
 
 ## Windows quick start
 
