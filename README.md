@@ -115,5 +115,3 @@ disclosed rather than assumed away.
 reaches 0.994 because age is one of its inputs; the number measures the leak,
 not the model, and it is excluded from the reported comparison.
 
-Read [RESULTS.md](docs/RESULTS.md) for the study and
-[VALIDATION.md](docs/VALIDATION.md) for tests and limitations.
